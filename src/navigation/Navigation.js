@@ -5,6 +5,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import solarSystemData from '../solarSystem.data';
+import Details from './details/Details';
 
 
 const styles = {
@@ -30,7 +31,7 @@ class Navigation extends PureComponent {
             </List>
           </div>
           <div>
-            
+            <Details detailsFor={details} />
           </div>
         </SwipeableViews>
       </div>
