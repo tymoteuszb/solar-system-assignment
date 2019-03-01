@@ -7,6 +7,8 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import IconButton from '@material-ui/core/IconButton';
+import { path } from 'ramda';
+
 import Navigation from './navigation/Navigation';
 import Model from './model/Model';
 
@@ -25,6 +27,12 @@ const styles = {
     display: 'flex',
     flex: 1,
   },
+  navLink: {
+    color: 'inherit',
+    textDecoration: 'none',
+    height: '24px',
+    display: 'inline-block',
+  }
 };
 
 class App extends PureComponent {
@@ -35,26 +43,38 @@ class App extends PureComponent {
       <Router>
         <Fragment>
           <CssBaseline />
-          <div className={classes.app}>
-            <AppBar position="static">
-              <Toolbar>
-                <IconButton color="inherit" aria-label="Menu">
-                  <ArrowBack />
-                </IconButton>
-                <Typography variant="title" color="inherit">
-                  Solar System
-                </Typography>
-              </Toolbar>
-            </AppBar>
-            <div className={classes.row}>
-              <div className={classes.column}>
-                <Navigation />
-              </div>
-              <div className={classes.column}>
-                <Model />
-              </div>
-            </div>
-          </div>
+            <Route path="/details/:name">
+              {({ match }) => {
+                const details = path(['params', 'name'], match);
+
+                return (
+                  <div className={classes.app}>
+                    <AppBar position="static">
+                      <Toolbar>
+                        {match ? (
+                          <IconButton color="inherit" aria-label="Menu">
+                            <Link to="/" className={classes.navLink}>
+                              <ArrowBack />
+                            </Link>
+                          </IconButton>
+                        ) : null}
+                        <Typography variant="title" color="inherit">
+                          {details || 'Solar System'}
+                        </Typography>
+                      </Toolbar>
+                    </AppBar>
+                    <div className={classes.row}>
+                      <div className={classes.column}>
+                        <Navigation details={details} />
+                      </div>
+                      <div className={classes.column}>
+                        <Model details={details} />
+                      </div>
+                    </div>
+                  </div>
+                );
+              }}
+            </Route>
         </Fragment>
       </Router>
     );
