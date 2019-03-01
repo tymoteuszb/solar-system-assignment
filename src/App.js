@@ -44,8 +44,9 @@ class App extends PureComponent {
         <Fragment>
           <CssBaseline />
             <Route path="/details/:name">
-              {({ match }) => {
+              {({ match, history }) => {
                 const details = path(['params', 'name'], match);
+                const onPlanetClick = (name) => history.push(`/details/${name}`);
 
                 return (
                   <div className={classes.app}>
@@ -65,10 +66,10 @@ class App extends PureComponent {
                     </AppBar>
                     <div className={classes.row}>
                       <div className={classes.column}>
-                        <Navigation details={details} />
+                        <Navigation details={details} onPlanetClick={onPlanetClick} />
                       </div>
                       <div className={classes.column}>
-                        <Model details={details} />
+                        <Model details={details} onPlanetClick={onPlanetClick} />
                       </div>
                     </div>
                   </div>

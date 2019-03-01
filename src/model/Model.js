@@ -1,5 +1,6 @@
 import React, { PureComponent, createRef } from 'react';
 import * as THREE from 'three';
+import { path, find, propEq } from 'ramda'
 
 import solarSystemData from '../solarSystem.data';
 
@@ -17,11 +18,33 @@ class Model extends PureComponent {
       new THREE.Vector3(0, 0, 1400);
   }
 
+  get planets() {
+    return path(['children', 0, 'children', 0, 'children', 0, 'children', 0, 'children', 0, 'children'], this.scene);
+  }
+
   modelRender = () => {
     requestAnimationFrame(this.modelRender);
     this.camera.position.copy(this.camera.position.clone().lerp(this.cameraTargetPosition, 0.1));
     this.renderer.render(this.scene, this.camera);
   }
+
+  handleClick = (e) => {
+    const { x, y, width, height } = this.targetDiv.current.getBoundingClientRect();
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2(
+      (e.clientX - x) / width * 2 - 1,
+      -(e.clientY - y) / height * 2 + 1,
+    );
+
+    raycaster.setFromCamera(mouse, this.camera);
+
+    const intersects = raycaster.intersectObjects(this.planets);
+    
+    if (intersects.length) {
+      const planet = Object.keys(solarSystemData)[Object.values(solarSystemData).findIndex(({ meshName }) => meshName === intersects[0].object.name)];
+      this.props.onPlanetClick(planet);
+    }
+  };
 
   componentDidMount() {
     this.containerWidth = this.targetDiv.current.offsetWidth;
@@ -41,8 +64,6 @@ class Model extends PureComponent {
       '/scene.gltf',
       (gltf) => {
         this.scene = gltf.scene;
-
-        this.scene.add(new THREE.PointLight(0xffffff));
         requestAnimationFrame(this.modelRender);
       },
       function (xhr) {},
@@ -52,7 +73,7 @@ class Model extends PureComponent {
 
   render() {
     return (
-      <div ref={this.targetDiv} style={divStyle} />
+      <div ref={this.targetDiv} style={divStyle} onClick={this.handleClick} />
     );
   }
 }

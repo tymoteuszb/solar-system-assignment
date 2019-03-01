@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import { Route, withRouter } from 'react-router-dom';
 import SwipeableViews from 'react-swipeable-views';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
@@ -15,10 +14,8 @@ const styles = {
 };
 
 class Navigation extends PureComponent {
-  handleItemClick = (name) => () => this.props.history.push(`/details/${name}`);
-
   render() {
-    const { classes, details } = this.props;
+    const { classes, details, onPlanetClick } = this.props;
 
     return (
       <div className={classes.root}>
@@ -26,7 +23,7 @@ class Navigation extends PureComponent {
           <div>
             <List component="nav">
               {Object.keys(solarSystemData).map(name => (
-                <ListItem button key={name} onClick={this.handleItemClick(name)}>
+                <ListItem button key={name} onClick={() => onPlanetClick(name)}>
                   <ListItemText primary={name} />
                 </ListItem>
               ))}
@@ -41,4 +38,4 @@ class Navigation extends PureComponent {
   }
 }
 
-export default withRouter(withStyles(styles)(Navigation));
+export default withStyles(styles)(Navigation);
