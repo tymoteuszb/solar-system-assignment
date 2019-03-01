@@ -2,6 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import * as THREE from 'three';
+import './index.css';
+
+window.THREE = THREE;
+require('three/examples/js/loaders/GLTFLoader');
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
